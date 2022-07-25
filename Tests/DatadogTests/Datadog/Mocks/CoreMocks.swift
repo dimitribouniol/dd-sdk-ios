@@ -478,7 +478,6 @@ extension FeaturesCommonDependencies {
         ),
         httpClient: HTTPClient? = nil,
         deviceInfo: DeviceInfo = .mockAny(),
-        batteryStatusProvider: BatteryStatusProviderType = BatteryStatusProviderMock.mockAny(),
         sdkInitDate: Date = Date(),
         dateProvider: DateProvider = SystemDateProvider(),
         dateCorrector: DateCorrector = DateCorrectorMock(),
@@ -526,7 +525,6 @@ extension FeaturesCommonDependencies {
             performance: performance,
             httpClient: client,
             deviceInfo: deviceInfo,
-            batteryStatusProvider: batteryStatusProvider,
             sdkInitDate: sdkInitDate,
             dateProvider: dateProvider,
             dateCorrector: dateCorrector,
@@ -545,7 +543,6 @@ extension FeaturesCommonDependencies {
         performance: PerformancePreset? = nil,
         httpClient: HTTPClient? = nil,
         deviceInfo: DeviceInfo? = nil,
-        batteryStatusProvider: BatteryStatusProviderType? = nil,
         sdkInitDate: Date? = nil,
         dateProvider: DateProvider? = nil,
         dateCorrector: DateCorrector? = nil,
@@ -561,7 +558,6 @@ extension FeaturesCommonDependencies {
             performance: performance ?? self.performance,
             httpClient: httpClient ?? self.httpClient,
             deviceInfo: deviceInfo ?? self.deviceInfo,
-            batteryStatusProvider: batteryStatusProvider ?? self.batteryStatusProvider,
             sdkInitDate: sdkInitDate ?? self.sdkInitDate,
             dateProvider: dateProvider ?? self.dateProvider,
             dateCorrector: dateCorrector ?? self.dateCorrector,
@@ -894,7 +890,7 @@ struct DataUploaderMock: DataUploaderType {
 
     var onUpload: (() -> Void)? = nil
 
-    func upload(events: [Data], context: DatadogV1Context) -> DataUploadStatus {
+    func upload(events: [Data], context: DatadogContext) -> DataUploadStatus {
         onUpload?()
         return uploadStatus
     }
@@ -967,38 +963,6 @@ extension BatteryStatus {
         level: Float = 0.5
     ) -> BatteryStatus {
         return BatteryStatus(state: state, level: level)
-    }
-}
-
-extension BatteryStatusV1 {
-    static func mockAny() -> BatteryStatusV1 {
-        return mockWith()
-    }
-
-    static func mockWith(
-        state: State = .charging,
-        level: Float = 0.5,
-        isLowPowerModeEnabled: Bool = false
-    ) -> BatteryStatusV1 {
-        return BatteryStatusV1(state: state, level: level, isLowPowerModeEnabled: isLowPowerModeEnabled)
-    }
-}
-
-extension BatteryStatusV1.State {
-    static func mockRandom(within cases: [BatteryStatusV1.State] = [.unknown, .unplugged, .charging, .full]) -> BatteryStatusV1.State {
-        return cases.randomElement()!
-    }
-}
-
-struct BatteryStatusProviderMock: BatteryStatusProviderType {
-    let current: BatteryStatusV1
-
-    static func mockWith(status: BatteryStatusV1 ) -> BatteryStatusProviderMock {
-        return BatteryStatusProviderMock(current: status)
-    }
-
-    static func mockAny() -> BatteryStatusProviderMock {
-        return BatteryStatusProviderMock(current: .mockAny())
     }
 }
 
