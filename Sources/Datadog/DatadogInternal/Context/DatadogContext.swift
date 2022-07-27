@@ -40,7 +40,7 @@ internal struct DatadogContext {
     /// Interval between device and server time.
     ///
     /// The value can change as the device continue to sync with the server.
-    var serverTimeOffset: TimeInterval
+    var serverTimeOffset: TimeInterval = .zero
 
     // MARK: - Application Specific
 
@@ -89,5 +89,5 @@ internal struct DatadogContext {
     var batteryStatus: BatteryStatus?
 
     /// `true` if the Low Power Mode is enabled.
-    var isLowPowerModeEnabled: Bool
+    var isLowPowerModeEnabled = false
 }
